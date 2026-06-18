@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HustleHub Admin - User Types</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css?v=14">
+</head>
+
+<body class="bg-light admin-page">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">HustleHub SA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="users.html">Users</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="roles.html">User Types</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reports.html">Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Storefront</a></li>
+                    <li class="nav-item"><button class="nav-link admin-logout" type="button" data-admin-logout>Logout</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="admin-hero compact">
+        <div class="container">
+            <span class="hero-kicker">Admin workspace</span>
+            <h1>User Types</h1>
+            <p>Control what each type of HustleHub account can access.</p>
+        </div>
+    </header>
+
+    <main class="container py-5 admin-content">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="h4 mb-3">Create / Update User Type</h1>
+                        <form id="roleForm" novalidate>
+                            <input type="hidden" name="roleId">
+                            <div class="mb-3">
+                                <label class="form-label">Type name</label>
+                                <input class="form-control" name="roleName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="roleDescription" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Permissions</label>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" name="permissions" value="users" id="permUsers"><label class="form-check-label" for="permUsers">Manage users</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" name="permissions" value="roles" id="permRoles"><label class="form-check-label" for="permRoles">Manage user types</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" name="permissions" value="products" id="permProducts"><label class="form-check-label" for="permProducts">Manage products</label></div>
+                                <div class="form-check"><input class="form-check-input" type="checkbox" name="permissions" value="orders" id="permOrders"><label class="form-check-label" for="permOrders">Manage orders</label></div>
+                            </div>
+                            <button class="btn btn-dark w-100" type="submit">Save User Type</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h4 mb-3">User Types</h2>
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Permissions</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rolesTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center p-3 mt-5">
+        <p class="mb-0">&copy; 2026 HustleHub SA</p>
+    </footer>
+
+    <script src="admin-api.js"></script>
+    <script src="admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

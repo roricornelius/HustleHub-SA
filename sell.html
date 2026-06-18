@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HustleHub SA - Sell</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=14">
+</head>
+
+<body class="bg-light">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">HustleHub SA</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="listings.html">Browse</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="sell.html">Sell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html">Cart</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white ms-lg-2" href="register.html">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SELL SECTION -->
+    <main class="container py-5 form-page">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <h1 class="h3 mb-2" id="sellFormHeading">Create a listing</h1>
+                        <p class="text-muted mb-4" id="sellFormIntro">Add your item details so buyers know exactly what you are selling.</p>
+
+                        <div id="sellMessage" class="alert d-none" role="alert"></div>
+
+                        <form id="sellForm" novalidate>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="itemName" class="form-label">Item name</label>
+                                    <input type="text" class="form-control" id="itemName" name="itemName" required>
+                                    <div class="invalid-feedback">Please enter an item name.</div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label for="itemBrand" class="form-label">Brand</label>
+                                    <input type="text" class="form-control" id="itemBrand" name="itemBrand" maxlength="100">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label for="itemPrice" class="form-label">Price</label>
+                                    <input type="number" class="form-control" id="itemPrice" name="itemPrice" min="1" required>
+                                    <div class="invalid-feedback">Please enter a valid price.</div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="itemCategory" class="form-label">Category</label>
+                                    <select class="form-select" id="itemCategory" name="itemCategory" required>
+                                        <option value="">Choose a category</option>
+                                        <option>Fashion</option>
+                                        <option>Tech</option>
+                                        <option>Books</option>
+                                        <option>Home</option>
+                                        <option>Sports</option>
+                                        <option>Other</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please choose a category.</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="itemCondition" class="form-label">Condition</label>
+                                    <select class="form-select" id="itemCondition" name="itemCondition" required>
+                                        <option value="">Choose condition</option>
+                                        <option>New</option>
+                                        <option>Like New</option>
+                                        <option>Very Good</option>
+                                        <option>Good</option>
+                                        <option>Fair</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please choose the item condition.</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="itemStatus" class="form-label">Availability</label>
+                                <select class="form-select" id="itemStatus" name="itemStatus">
+                                    <option value="available">Available</option>
+                                    <option value="sold">Sold</option>
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="itemLocation" class="form-label">Location</label>
+                                    <input type="text" class="form-control" id="itemLocation" name="itemLocation" required>
+                                    <div class="invalid-feedback">Please enter your location.</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Delivery support</label>
+                                    <div class="delivery-options">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="deliveryOptions" id="deliveryMeet" value="Meet seller" checked>
+                                            <label class="form-check-label" for="deliveryMeet">Meet seller</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="deliveryOptions" id="deliveryPickup" value="Pickup point">
+                                            <label class="form-check-label" for="deliveryPickup">Pickup point</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="deliveryOptions" id="deliveryCourier" value="Courier delivery">
+                                            <label class="form-check-label" for="deliveryCourier">Courier delivery</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Photo source</label>
+                                <div class="btn-group w-100" role="group" aria-label="Choose photo source">
+                                    <input type="radio" class="btn-check" name="photoSource" id="photoSourceUpload" value="upload" checked>
+                                    <label class="btn btn-outline-dark" for="photoSourceUpload">Upload</label>
+
+                                    <input type="radio" class="btn-check" name="photoSource" id="photoSourceCamera" value="camera">
+                                    <label class="btn btn-outline-dark" for="photoSourceCamera">Camera</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3" id="uploadPhotoGroup">
+                                <label for="itemImage" class="form-label">Upload photo</label>
+                                <input type="file" class="form-control" id="itemImage" name="itemImage" accept="image/*">
+                                <div class="form-text">Choose a photo from your gallery or device. Max size: 2MB.</div>
+                            </div>
+
+                            <div class="mb-3 d-none" id="cameraPhotoGroup">
+                                <label for="itemCameraImage" class="form-label">Take a photo</label>
+                                <input type="file" class="form-control" id="itemCameraImage" name="itemCameraImage" accept="image/*" capture="environment">
+                                <div class="form-text">On supported phones, this opens the camera.</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="itemDescription" class="form-label">Description</label>
+                                <textarea class="form-control" id="itemDescription" name="itemDescription" rows="5" required></textarea>
+                                <div class="invalid-feedback">Please describe the item.</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-dark w-100" id="sellSubmitButton">Save Listing</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white text-center p-3 mt-5">
+        <p class="mb-0">&copy; 2026 HustleHub SA</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/script.js?v=15"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+

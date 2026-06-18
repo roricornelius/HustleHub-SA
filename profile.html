@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HustleHub SA - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=14">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">HustleHub SA</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="listings.html">Browse</a></li>
+                <li class="nav-item"><a class="nav-link" href="sell.html">Sell</a></li>
+                <li class="nav-item"><a class="nav-link active" href="profile.html">Profile</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- PROFILE SECTION -->
+<section class="container mt-5">
+    <div class="alert alert-success d-none" id="registrationSuccessMessage" role="alert"></div>
+    <div class="alert alert-primary d-none" id="welcomeMessage" role="alert"></div>
+
+    <div class="alert alert-info d-none" id="profileLoginPrompt" role="alert">
+        Please log in or register to view your profile.
+        <div class="mt-3">
+            <a class="btn btn-dark me-2" href="login.html">Login</a>
+            <a class="btn btn-primary" href="register.html">Register</a>
+        </div>
+    </div>
+
+    <div class="row" id="profileContent">
+        
+        <!-- LEFT SIDE -->
+        <div class="col-md-4 text-center">
+            <button class="profile-photo-button mb-3" id="profileAvatarButton" type="button" aria-label="Add profile picture">
+                <span class="profile-photo-placeholder" id="profileAvatarPlaceholder">Add Photo</span>
+                <img src="" class="profile-photo d-none" id="profileAvatar" alt="Profile picture">
+            </button>
+
+            <h3 id="profileName">HustleHub User</h3>
+            <p class="text-muted" id="profileLocation">Cape Town, South Africa</p>
+
+            <p class="mb-1"><strong>Email:</strong> <span id="profileEmail">Not set</span></p>
+            <p><strong>Phone:</strong> <span id="profilePhone">Not set</span></p>
+            <p class="mb-1"><strong>Status:</strong> <span id="profileVerifiedStatus">Unverified</span></p>
+            <p class="mb-1"><strong>Trading profile:</strong> <span id="profileSellerType">Marketplace member</span></p>
+            <p class="mb-1"><strong>Language:</strong> <span id="profileLanguage">English</span></p>
+            <p class="mb-1"><strong>Rating:</strong> <span id="profileRatingSummary">No ratings yet</span></p>
+            <p><strong>Member since:</strong> <span id="profileMemberSince">January 2026</span></p>
+            <p id="profileBio" class="text-muted">No bio added yet.</p>
+
+            <div id="privateProfileActions">
+                <button class="btn btn-dark w-100 mb-2" id="editProfileButton" type="button">
+                    Edit Profile
+                </button>
+
+                <button class="btn btn-outline-danger w-100" id="deleteAccountButton" type="button">
+                    Delete Account
+                </button>
+            </div>
+
+            <div class="d-none" id="publicProfileActions">
+                <button class="btn btn-dark w-100 mb-2" type="button" id="followUserButton" data-follow-user="">
+                    Follow User
+                </button>
+
+                <button class="btn btn-outline-dark w-100 icon-button" type="button" data-message-user="">
+                    <span class="message-icon" aria-hidden="true"></span>
+                    Message User
+                </button>
+            </div>
+
+            <div id="profileMessage" class="alert d-none mt-3" role="alert"></div>
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-8" id="privateProfileSections">
+            <h4 class="mb-4">My Listings</h4>
+
+            <div class="row g-4" id="myListingsGrid">
+                <p class="text-muted" id="noMyListings">You have not listed anything yet.</p>
+            </div>
+
+            <div class="mt-5">
+                <h4 class="mb-3">Shop Discount Codes</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-muted">Generate a code buyers can use for discounts on your listings only.</p>
+
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label for="shopCodePrefix" class="form-label">Code name</label>
+                                <input class="form-control" id="shopCodePrefix" type="text" maxlength="12" placeholder="e.g. THANDO10">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="shopCodePercent" class="form-label">Discount (%)</label>
+                                <input class="form-control" id="shopCodePercent" type="number" min="1" max="80" value="10">
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-dark w-100" id="generateShopCodeButton" type="button">Generate</button>
+                            </div>
+                        </div>
+
+                        <div id="shopCodeMessage" class="alert d-none mt-3" role="alert"></div>
+                        <div class="list-group mt-3" id="shopCodesList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">My Cart</h4>
+                    <a class="btn btn-outline-dark btn-sm" href="cart.html">Open Cart</a>
+                </div>
+
+                <div id="profileCartItems" class="list-group"></div>
+
+                <div class="text-end mt-3">
+                    <strong>Total: <span class="text-success" id="profileCartTotal">R0</span></strong>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h4 class="mb-3">Favorites</h4>
+                <div class="row g-4" id="favoritesGrid"></div>
+            </div>
+
+            <div class="mt-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Messages</h4>
+                    <a class="btn btn-outline-dark btn-sm icon-button" href="messages.html">
+                        <span class="message-icon" aria-hidden="true"></span>
+                        Open Messages
+                    </a>
+                </div>
+                <p class="text-muted mb-0">Your conversations show profile pictures, latest messages, dates, and active status.</p>
+            </div>
+
+            <div class="mt-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Following</h4>
+                    <a class="btn btn-outline-dark btn-sm" href="notifications.html">Notifications</a>
+                </div>
+                <div class="list-group" id="followingList"></div>
+            </div>
+        </div>
+
+        <div class="col-md-8 d-none" id="publicProfileSections">
+            <h4 class="mb-4">Listings</h4>
+            <div class="row g-4" id="publicListingsGrid"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- EDIT PROFILE SECTION -->
+<section class="container mt-4 d-none" id="editProfileSection">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">Edit Profile</h4>
+
+                    <form id="profileForm" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editFullName" class="form-label">Full name</label>
+                                <input type="text" class="form-control" id="editFullName" name="fullName" required>
+                                <div class="invalid-feedback">Please enter your full name.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="editEmail" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="editEmail" name="email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" required>
+                                <div class="invalid-feedback">Please enter a valid email address, like name@example.com.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editPhone" class="form-label">Phone number</label>
+                                <input type="tel" class="form-control" id="editPhone" name="phone" pattern="[0-9]{10}" maxlength="10" inputmode="numeric" required>
+                                <div class="invalid-feedback">Please enter a 10-digit phone number.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="editLocation" class="form-label">Location</label>
+                                <select class="form-select" id="editLocation" name="location" required>
+                                    <option value="">Choose your province</option>
+                                    <option>Eastern Cape</option>
+                                    <option>Free State</option>
+                                    <option>Gauteng</option>
+                                    <option>KwaZulu-Natal</option>
+                                    <option>Limpopo</option>
+                                    <option>Mpumalanga</option>
+                                    <option>Northern Cape</option>
+                                    <option>North West</option>
+                                    <option>Western Cape</option>
+                                </select>
+                                <div class="invalid-feedback">Please choose your province.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editSellerType" class="form-label">Trading profile</label>
+                            <select class="form-select" id="editSellerType" name="sellerType">
+                                <option>Student reseller</option>
+                                <option>Township side hustler</option>
+                                <option>Informal trader</option>
+                                <option>Small business seller</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editPreferredLanguage" class="form-label">Preferred language</label>
+                                <select class="form-select" id="editPreferredLanguage" name="preferredLanguage" required>
+                                    <option>English</option>
+                                    <option>isiXhosa</option>
+                                    <option>isiZulu</option>
+                                    <option>Afrikaans</option>
+                                    <option>Sesotho</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="editIdNumber" class="form-label">ID or student number</label>
+                                <input type="text" class="form-control" id="editIdNumber" name="idNumber" minlength="6" maxlength="30">
+                                <div class="form-text">Adding this marks your seller profile as verified.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editBio" class="form-label">Shop / profile bio</label>
+                            <textarea class="form-control" id="editBio" name="bio" rows="3" maxlength="180"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label d-block">Profile picture</label>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="profilePhotoSource" id="profilePhotoUploadSource" value="upload" checked>
+                                <label class="form-check-label" for="profilePhotoUploadSource">Upload file</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="profilePhotoSource" id="profilePhotoCameraSource" value="camera">
+                                <label class="form-check-label" for="profilePhotoCameraSource">Use camera</label>
+                            </div>
+
+                            <div class="mt-3" id="profileUploadPhotoGroup">
+                                <input class="form-control" type="file" id="profileImage" name="profileImage" accept="image/*">
+                            </div>
+
+                            <div class="mt-3 d-none" id="profileCameraPhotoGroup">
+                                <input class="form-control" type="file" id="profileCameraImage" name="profileCameraImage" accept="image/*" capture="user">
+                            </div>
+
+                            <input type="hidden" id="removeProfilePhoto" name="removeProfilePhoto" value="0">
+
+                            <div class="profile-photo-edit mt-4 d-none" id="profilePhotoPositionControls">
+                                <div class="profile-photo-preview mb-3">
+                                    <img src="" id="profilePhotoPreview" alt="Profile picture preview">
+                                </div>
+
+                                <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" id="profilePhotoCenterButton">Center</button>
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" id="profilePhotoZoomOutButton">Zoom out</button>
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" id="profilePhotoZoomInButton">Zoom in</button>
+                                    <button class="btn btn-outline-danger btn-sm" type="button" id="removeProfilePhotoButton">Remove photo</button>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="profilePhotoZoom" class="form-label">Zoom</label>
+                                    <input class="form-range" type="range" id="profilePhotoZoom" name="profilePhotoZoom" min="100" max="180" value="122">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="profilePhotoX" class="form-label">Move left / right</label>
+                                    <input class="form-range" type="range" id="profilePhotoX" name="profilePhotoX" min="0" max="100" value="50">
+                                </div>
+
+                                <div>
+                                    <label for="profilePhotoY" class="form-label">Move up / down</label>
+                                    <input class="form-range" type="range" id="profilePhotoY" name="profilePhotoY" min="0" max="100" value="50">
+                                </div>
+                            </div>
+
+                            <div class="form-text">Leave this empty to keep your current picture.</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-dark" type="submit">Save Changes</button>
+                            <button class="btn btn-outline-secondary" type="button" id="cancelEditProfileButton">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white text-center p-3 mt-5">
+    <p class="mb-0">&copy; 2026 HustleHub SA</p>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/script.js?v=15"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

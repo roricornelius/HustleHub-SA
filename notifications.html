@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HustleHub SA - Notifications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=14">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">HustleHub SA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="listings.html">Browse</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sell.html">Sell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="notifications.html">Notifications</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <div class="alert alert-info d-none" id="notificationLoginPrompt" role="alert">
+            Please log in to view notifications from users you follow.
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-4">
+            <div>
+                <h1 class="h3 mb-1">Notifications</h1>
+                <p class="text-muted mb-0">New listings from users you follow appear here.</p>
+            </div>
+            <button class="btn btn-outline-dark" id="markNotificationsRead" type="button">Mark all read</button>
+        </div>
+
+        <div class="list-group" id="notificationList"></div>
+    </main>
+
+    <footer class="bg-dark text-white text-center p-3 mt-5">
+        <p class="mb-0">&copy; 2026 HustleHub SA</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/script.js?v=15"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

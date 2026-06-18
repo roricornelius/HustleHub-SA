@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HustleHub SA - Cart</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=14">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+
+        <a class="navbar-brand" href="index.html">
+            HustleHub SA
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse"
+             id="navbarNav">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="listings.html">Browse</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="sell.html">Sell</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html">Login</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="profile.html">Profile</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="cart.html">Cart</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link btn btn-primary text-white ms-lg-2" href="register.html">Register</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- CART SECTION -->
+<section class="container mt-5">
+
+    <h2 class="mb-4">
+        Shopping Cart
+    </h2>
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="cart-items">
+                <!-- JS inserts cart items -->
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="text-end">
+
+        <h4>
+            Subtotal:
+            <span class="text-success" id="cart-subtotal">R0</span>
+        </h4>
+
+        <div class="row justify-content-end mt-3">
+            <div class="col-md-5">
+                <label class="form-label" for="discount-code">Discount code</label>
+                <div class="input-group">
+                    <input class="form-control" id="discount-code" type="text" placeholder="Enter seller shop code">
+                    <button class="btn btn-outline-dark" id="apply-discount" type="button">Apply</button>
+                </div>
+                <p class="small text-muted mb-0 mt-2" id="discount-message">Seller shop codes only discount items from that seller.</p>
+            </div>
+        </div>
+
+        <h4 class="mt-3">
+            Total:
+            <span class="text-success" id="cart-total">R0</span>
+        </h4>
+
+        <button class="btn btn-dark mt-3" id="checkout-button" type="button">
+            Proceed to Checkout
+        </button>
+
+        <div class="alert alert-info d-none mt-3 text-start" id="checkout-login-prompt" role="alert">
+            Please log in or register before checking out your cart.
+            <div class="mt-2">
+                <a class="btn btn-dark btn-sm me-2" href="login.html">Login</a>
+                <a class="btn btn-primary btn-sm" href="register.html">Register</a>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CHECKOUT SECTION -->
+<section class="container mt-5 d-none" id="checkout-section">
+    <div class="row justify-content-end">
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Checkout</h3>
+                    <div class="alert alert-info" role="alert">
+                        Buyer Protection: order details are saved, items are marked sold after checkout, and your delivery choice is recorded.
+                    </div>
+
+                    <div id="checkoutMessage" class="alert d-none" role="alert"></div>
+
+                    <form id="checkoutForm" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="checkoutName" class="form-label">Full name</label>
+                                <input type="text" class="form-control" id="checkoutName" name="fullName" required>
+                                <div class="invalid-feedback">Please enter your full name.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="checkoutEmail" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="checkoutEmail" name="email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="checkoutPhone" class="form-label">Phone number</label>
+                                <input type="tel" class="form-control" id="checkoutPhone" name="phone" pattern="[0-9]{10}" maxlength="10" inputmode="numeric" required>
+                                <div class="invalid-feedback">Please enter a 10-digit phone number.</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="checkoutDelivery" class="form-label">Delivery option</label>
+                                <select class="form-select" id="checkoutDelivery" name="delivery" required>
+                                    <option value="">Choose an option</option>
+                                    <option>Meet seller safely</option>
+                                    <option>Campus pickup point</option>
+                                    <option>Township pickup point</option>
+                                    <option>Courier delivery</option>
+                                </select>
+                                <div class="invalid-feedback">Please choose a delivery option.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="checkoutAddress" class="form-label">Address or meeting notes</label>
+                            <textarea class="form-control" id="checkoutAddress" name="address" rows="3" required></textarea>
+                            <div class="invalid-feedback">Please enter delivery or collection details.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="checkoutPayment" class="form-label">Payment method</label>
+                            <select class="form-select" id="checkoutPayment" name="payment" required>
+                                <option value="">Choose a payment method</option>
+                                <option>PayFast secure checkout</option>
+                                <option>Ozow instant EFT</option>
+                                <option>Protected EFT</option>
+                                <option>Cash on collection</option>
+                            </select>
+                            <div class="invalid-feedback">Please choose a payment method.</div>
+                        </div>
+
+                        <div class="alert alert-secondary small" role="alert">
+                            Disputes can be opened from your profile after checkout if an item, payment, or delivery goes wrong.
+                        </div>
+
+                        <button class="btn btn-dark w-100" type="submit">Place Order</button>
+                    </form>
+
+                    <div id="orderConfirmation" class="alert alert-success d-none mt-4" role="alert"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white text-center p-3 mt-5">
+    <p class="mb-0">&copy; 2026 HustleHub SA</p>
+</footer>
+
+
+<script src="js/api.js"></script>
+<script src="js/script.js?v=15"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- CART SCRIPT -->
+<script id="2g4sba">
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartItems = document.getElementById("cart-items");
+const cartSubtotal = document.getElementById("cart-subtotal");
+const cartTotal = document.getElementById("cart-total");
+const checkoutButton = document.getElementById("checkout-button");
+const checkoutSection = document.getElementById("checkout-section");
+const checkoutForm = document.getElementById("checkoutForm");
+const orderConfirmation = document.getElementById("orderConfirmation");
+const discountCode = document.getElementById("discount-code");
+const applyDiscountButton = document.getElementById("apply-discount");
+const discountMessage = document.getElementById("discount-message");
+const checkoutLoginPrompt = document.getElementById("checkout-login-prompt");
+let appliedDiscount = JSON.parse(localStorage.getItem("hustleHubDiscount")) || null;
+
+function loadCart() {
+
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center">
+                    Your cart is empty.
+                </td>
+            </tr>
+        `;
+        checkoutButton.disabled = true;
+
+    } else {
+        checkoutButton.disabled = false;
+
+        cart.forEach((product, index) => {
+
+            total += Number(product.price) || 0;
+
+            cartItems.innerHTML += `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>R${product.price}</td>
+                    <td>1</td>
+                    <td>R${product.price}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm"
+                                onclick="removeItem(${index})">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    const discountAmount = getDiscountAmount();
+    const finalTotal = Math.max(0, total - discountAmount);
+
+    cartSubtotal.innerText = "R" + total;
+    cartTotal.innerText = "R" + finalTotal;
+
+    if (discountMessage && appliedDiscount) {
+        const sellerName = appliedDiscount.sellerName || appliedDiscount.sellerEmail || "this seller";
+        discountMessage.textContent = discountAmount > 0
+            ? appliedDiscount.code + " applied: R" + discountAmount + " off " + sellerName + " items."
+            : appliedDiscount.code + " is saved, but this cart has no matching seller items.";
+    }
+}
+
+
+function removeItem(index) {
+
+    cart.splice(index, 1);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    loadCart();
+}
+
+
+loadCart();
+
+applyDiscountButton.addEventListener("click", function () {
+    const code = normalizeShopCode(discountCode.value);
+    const shopCode = getShopCodes().find((entry) => entry.code === code && entry.active);
+
+    if (!code) {
+        appliedDiscount = null;
+        localStorage.removeItem("hustleHubDiscount");
+        discountMessage.textContent = "Enter a seller shop code.";
+        loadCart();
+        return;
+    }
+
+    if (!shopCode) {
+        appliedDiscount = null;
+        localStorage.removeItem("hustleHubDiscount");
+        discountMessage.textContent = "That shop code is not active.";
+        loadCart();
+        return;
+    }
+
+    const eligibleSubtotal = getSellerSubtotal(shopCode.sellerEmail);
+
+    if (eligibleSubtotal <= 0) {
+        appliedDiscount = null;
+        localStorage.removeItem("hustleHubDiscount");
+        discountMessage.textContent = "That code belongs to " + (shopCode.sellerName || shopCode.sellerEmail) + " and does not match the sellers in your cart.";
+        loadCart();
+        return;
+    }
+
+    appliedDiscount = {
+        code: shopCode.code,
+        sellerEmail: shopCode.sellerEmail,
+        sellerName: shopCode.sellerName,
+        type: shopCode.type,
+        value: shopCode.value
+    };
+    localStorage.setItem("hustleHubDiscount", JSON.stringify(appliedDiscount));
+    discountMessage.textContent = shopCode.code + " applied for " + shopCode.value + "% off " + (shopCode.sellerName || "that seller") + " items.";
+    loadCart();
+});
+
+checkoutButton.addEventListener("click", function () {
+    if (cart.length === 0) {
+        return;
+    }
+
+    const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+    const ownCartItem = getOwnCartItem(currentUser);
+
+    if (!currentUser) {
+        localStorage.setItem("hustleHubAuthRedirect", "cart.html");
+        checkoutSection.classList.add("d-none");
+
+        if (checkoutLoginPrompt) {
+            checkoutLoginPrompt.classList.remove("d-none");
+            checkoutLoginPrompt.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        return;
+    }
+
+    if (currentUser.accountStatus === "suspended") {
+        alert("Your account is suspended. You cannot check out until an admin reviews it.");
+        checkoutSection.classList.add("d-none");
+        return;
+    }
+
+    if (ownCartItem) {
+        alert("You cannot buy your own listing: " + ownCartItem.name + ". Remove it from your cart or edit it from your profile.");
+        checkoutSection.classList.add("d-none");
+        return;
+    }
+
+    if (checkoutLoginPrompt) {
+        checkoutLoginPrompt.classList.add("d-none");
+    }
+
+    prefillCheckoutForm();
+    checkoutSection.classList.remove("d-none");
+    checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+checkoutForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+    const ownCartItem = getOwnCartItem(currentUser);
+
+    if (!currentUser) {
+        localStorage.setItem("hustleHubAuthRedirect", "cart.html");
+        showMessage("checkoutMessage", "Please log in or register before placing your order.", "warning");
+        checkoutSection.classList.add("d-none");
+
+        if (checkoutLoginPrompt) {
+            checkoutLoginPrompt.classList.remove("d-none");
+            checkoutLoginPrompt.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        return;
+    }
+
+    if (currentUser.accountStatus === "suspended") {
+        showMessage("checkoutMessage", "Your account is suspended. You cannot place orders until an admin reviews it.", "danger");
+        return;
+    }
+
+    if (ownCartItem) {
+        showMessage("checkoutMessage", "You cannot buy your own listing: " + ownCartItem.name + ".", "danger");
+        return;
+    }
+
+    checkoutForm.email.setCustomValidity("");
+    checkoutForm.phone.setCustomValidity("");
+    validateEmailField(checkoutForm.email);
+    validatePhoneField(checkoutForm.phone);
+
+    if (!checkoutForm.checkValidity()) {
+        checkoutForm.classList.add("was-validated");
+        showMessage("checkoutMessage", "Please complete the highlighted checkout details.", "danger");
+        return;
+    }
+
+    const subtotal = cart.reduce((sum, product) => sum + (Number(product.price) || 0), 0);
+    const discountAmount = getDiscountAmount();
+    const total = Math.max(0, subtotal - discountAmount);
+    const order = {
+        id: "HH" + Date.now(),
+        customerId: currentUser.id,
+        customer: {
+            fullName: checkoutForm.fullName.value.trim(),
+            email: checkoutForm.email.value.trim().toLowerCase(),
+            phone: checkoutForm.phone.value.trim()
+        },
+        delivery: checkoutForm.delivery.value,
+        address: checkoutForm.address.value.trim(),
+        payment: checkoutForm.payment.value,
+        paymentStatus: ["PayFast secure checkout", "Ozow instant EFT"].includes(checkoutForm.payment.value) ? "Payment gateway selected" : "Pending",
+        disputeStatus: "None",
+        items: cart,
+        discount: appliedDiscount,
+        discountAmount: discountAmount,
+        subtotal: subtotal,
+        total: total,
+        date: new Date().toISOString()
+    };
+    const orders = JSON.parse(localStorage.getItem("hustleHubOrders")) || [];
+    let orderNumber = order.id;
+
+    if (typeof apiRequest === "function") {
+        try {
+            const response = await apiRequest("checkout", {
+                customerId: order.customerId,
+                customer: order.customer,
+                delivery: order.delivery,
+                address: order.address,
+                payment: order.payment,
+                items: order.items,
+                total: order.total
+            });
+
+            orderNumber = response.orderNumber;
+            order.id = orderNumber;
+        } catch (error) {
+            orderNumber = order.id;
+        }
+    }
+
+    orders.push(order);
+    localStorage.setItem("hustleHubOrders", JSON.stringify(orders));
+    markCartItemsSold(cart);
+    localStorage.setItem("cart", JSON.stringify([]));
+    localStorage.removeItem("hustleHubDiscount");
+    appliedDiscount = null;
+    cart = [];
+
+    checkoutForm.reset();
+    checkoutForm.classList.remove("was-validated");
+    checkoutForm.classList.add("d-none");
+    orderConfirmation.innerHTML = 'Order placed successfully. Your order number is ' + orderNumber + '. <a class="alert-link" href="orders.html">View your orders</a>.';
+    orderConfirmation.classList.remove("d-none");
+    showMessage("checkoutMessage", "Your cart has been checked out.", "success");
+    if (typeof updateNavbarForLoginState === "function") {
+        updateNavbarForLoginState();
+    }
+    loadCart();
+});
+
+function prefillCheckoutForm() {
+    const currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : null;
+
+    if (!currentUser) {
+        return;
+    }
+
+    checkoutForm.fullName.value = currentUser.fullName || "";
+    checkoutForm.email.value = currentUser.email || "";
+    checkoutForm.phone.value = currentUser.phone || "";
+}
+
+function getOwnCartItem(currentUser) {
+    if (!currentUser || !currentUser.email) {
+        return null;
+    }
+
+    return cart.find((item) => getCartItemSellerEmail(item) === currentUser.email) || null;
+}
+
+function getCartItemSellerEmail(item) {
+    if (item.sellerEmail) {
+        return item.sellerEmail;
+    }
+
+    if (typeof BUILT_IN_PRODUCTS === "undefined") {
+        return "";
+    }
+
+    const product = BUILT_IN_PRODUCTS.find((entry) => entry.name === item.name);
+
+    return product ? product.sellerEmail : "";
+}
+
+function markCartItemsSold(items) {
+    const soldProducts = JSON.parse(localStorage.getItem("hustleHubSoldProducts")) || [];
+    const listings = JSON.parse(localStorage.getItem("hustleHubListings")) || [];
+    const updatedListings = listings.map((listing) => {
+        const wasBought = items.some((item) => item.name === listing.name);
+
+        return wasBought ? { ...listing, sold: true, soldAt: new Date().toISOString() } : listing;
+    });
+
+    items.forEach((item) => {
+        const product = typeof BUILT_IN_PRODUCTS !== "undefined"
+            ? BUILT_IN_PRODUCTS.find((entry) => entry.name === item.name)
+            : null;
+
+        if (product && !soldProducts.includes(product.id)) {
+            soldProducts.push(product.id);
+        }
+    });
+
+    localStorage.setItem("hustleHubSoldProducts", JSON.stringify(soldProducts));
+    localStorage.setItem("hustleHubListings", JSON.stringify(updatedListings));
+}
+
+function getShopCodes() {
+    try {
+        return JSON.parse(localStorage.getItem("hustleHubShopCodes")) || [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function normalizeShopCode(value) {
+    return String(value || "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 12);
+}
+
+function getSellerSubtotal(sellerEmail) {
+    if (!sellerEmail) {
+        return 0;
+    }
+
+    return cart.reduce((sum, product) => {
+        return getCartItemSellerEmail(product) === sellerEmail
+            ? sum + (Number(product.price) || 0)
+            : sum;
+    }, 0);
+}
+
+function getDiscountAmount() {
+    if (!appliedDiscount || appliedDiscount.type !== "percent") {
+        return 0;
+    }
+
+    const eligibleSubtotal = getSellerSubtotal(appliedDiscount.sellerEmail);
+
+    return Math.round(eligibleSubtotal * (Number(appliedDiscount.value) || 0) / 100);
+}
+</script>
+
+</body>
+</html>
+
+

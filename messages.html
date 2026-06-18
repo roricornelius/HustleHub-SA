@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HustleHub SA - Messages</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=14">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">HustleHub SA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="listings.html">Browse</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sell.html">Sell</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="messages.html">Messages</a></li>
+                </ul>
+            </section>
+        </div>
+    </nav>
+
+    <main class="container py-5 messages-page-main">
+        <div class="alert alert-info d-none" id="messageLoginPrompt" role="alert">
+            Please log in to send and view messages.
+        </div>
+
+        <div class="messages-shell" id="messagesShell">
+            <aside class="messages-sidebar" id="conversationPane">
+                <div class="messages-sidebar-header">
+                    <h1 class="h4 mb-1">Messages</h1>
+                    <p class="text-muted mb-0">Your recent chats</p>
+                </div>
+                <div class="list-group conversation-list" id="conversationList"></div>
+            </aside>
+
+            <section class="messages-chat" id="chatPane">
+                <header class="messages-chat-header">
+                    <button class="btn btn-outline-secondary messages-back" type="button" id="messageBackButton">Back</button>
+                    <div>
+                        <h2 class="h4 mb-1" id="messageHeading">New message</h2>
+                        <p class="text-muted mb-0" id="messageHint">Pick a person and type your message.</p>
+                    </div>
+                </header>
+
+                <div id="messageStatus" class="alert d-none" role="alert"></div>
+
+                <div class="message-thread" id="messageThread">
+                    <p class="text-muted mb-0">Choose a conversation or send a new message.</p>
+                </div>
+
+                <form id="messageForm" class="quick-message-form">
+                    <div class="message-recipient-row">
+                        <label for="messageRecipient" class="form-label mb-0">Send to</label>
+                        <select class="form-select" id="messageRecipient" name="recipient" required></select>
+                    </div>
+
+                    <div class="quick-message-box">
+                        <label for="messageText" class="visually-hidden">Message</label>
+                        <textarea class="form-control" id="messageText" name="messageText" rows="2" placeholder="Write a message..." required></textarea>
+                        <button class="btn btn-dark" type="submit">Send</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/script.js?v=15"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
