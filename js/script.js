@@ -1335,8 +1335,11 @@ function setupMarketplaceFilters() {
 function hydrateStaticProductCards(productGrid) {
     Array.from(productGrid.querySelectorAll(".col-6")).forEach(function (column) {
         const title = column.querySelector(".card-title");
+        const priceText = Array.from(column.querySelectorAll("p")).find(function (paragraph) {
+            return parsePriceValue(paragraph.textContent) > 0;
+        });
 
-        if (!title || column.dataset.category) {
+        if (!title) {
             return;
         }
 
@@ -1344,14 +1347,17 @@ function hydrateStaticProductCards(productGrid) {
             return normalizeProductName(item.name) === normalizeProductName(title.textContent);
         });
 
-        if (!product) {
-            return;
+        if (product) {
+            column.dataset.category = product.category;
+            column.dataset.brand = product.brand;
+            column.dataset.condition = product.condition;
         }
 
-        column.dataset.category = product.category;
-        column.dataset.brand = product.brand;
-        column.dataset.condition = product.condition;
-        column.dataset.price = String(product.price);
+        if (!column.dataset.price && priceText) {
+            column.dataset.price = String(parsePriceValue(priceText.textContent));
+        } else if (product) {
+            column.dataset.price = String(product.price);
+        }
     });
 }
 
@@ -1388,7 +1394,7 @@ function applyQueryFilters(form) {
 function filterProductGrid(productGrid, form) {
     const searchInput = document.querySelector(".product-search");
     const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
-    const maxPrice = form && form.maxPrice ? Number(form.maxPrice.value) || Infinity : Infinity;
+    const maxPrice = form && form.maxPrice ? parsePriceValue(form.maxPrice.value) || Infinity : Infinity;
     const category = form && form.category ? form.category.value : "";
     const brand = form && form.brand ? form.brand.value : "";
     const condition = form && form.condition ? form.condition.value : "";
@@ -1396,7 +1402,7 @@ function filterProductGrid(productGrid, form) {
     let visibleCount = 0;
 
     productCards.forEach(function (column) {
-        const price = Number(column.dataset.price) || 0;
+        const price = parsePriceValue(column.dataset.price || column.textContent);
         const productText = column.textContent.toLowerCase();
         const isMatch = (!category || column.dataset.category === category)
             && (!brand || column.dataset.brand === brand)
@@ -1419,6 +1425,24 @@ function filterProductGrid(productGrid, form) {
     if (!noResults.parentElement) {
         productGrid.appendChild(noResults);
     }
+}
+
+function parsePriceValue(value) {
+    const text = String(value || "");
+    const priceMatch = text.match(/r\s*([0-9][0-9\s,.]*)/i);
+    let normalizedValue = (priceMatch ? priceMatch[1] : text).replace(/[^0-9,.]/g, "");
+
+    if (normalizedValue.includes(",") && normalizedValue.includes(".")) {
+        normalizedValue = normalizedValue.replace(/,/g, "");
+    } else if (/\d,\d{1,2}$/.test(normalizedValue)) {
+        normalizedValue = normalizedValue.replace(",", ".");
+    } else {
+        normalizedValue = normalizedValue.replace(/,/g, "");
+    }
+
+    const price = Number(normalizedValue);
+
+    return Number.isFinite(price) ? price : 0;
 }
 
 function setupUserSearch() {
