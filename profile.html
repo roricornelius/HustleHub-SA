@@ -69,7 +69,7 @@
                     Edit Profile
                 </button>
 
-                <button class="btn btn-outline-secondary w-100 mb-2" id="logoutButton" type="button">
+                <button class="btn btn-outline-secondary w-100 mb-2" id="logoutButton" type="button" onclick="localStorage.removeItem('hustleHubCurrentUser'); localStorage.setItem('hustleHubAuthRedirect', 'profile.html'); window.location.href='login.html';">
                     Logout
                 </button>
 
@@ -327,7 +327,7 @@
 </footer>
 
 <script src="js/api.js"></script>
-<script src="js/script.js?v=15"></script>
+<script src="js/script.js?v=17"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
