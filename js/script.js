@@ -390,6 +390,7 @@ async function handleSellListing(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
+    const editListingId = form.dataset.editListingId ? Number(form.dataset.editListingId) : null;
 
     if (!form.checkValidity()) {
         form.classList.add("was-validated");
@@ -408,77 +409,53 @@ async function handleSellListing(event) {
 
     const listings = getStoredListings();
     const currentUser = getCurrentUser();
+    const existingListing = editListingId ? listings.find(function (listingItem) {
+        return Number(listingItem.id) === editListingId;
+    }) : null;
+
+    if (editListingId && !existingListing) {
+        showMessage("sellMessage", "Unable to find the listing to update.", "danger");
+        return;
+    }
+
+    if (existingListing && !isCurrentUserListingOwner(existingListing)) {
+        showMessage("sellMessage", "You are not allowed to edit this listing.", "danger");
+        return;
+    }
+
     const listing = {
         name: form.itemName.value.trim(),
+        brand: form.itemBrand ? form.itemBrand.value.trim() : "",
         price: Number(form.itemPrice.value),
         category: form.itemCategory.value,
         condition: form.itemCondition ? form.itemCondition.value : "Good",
         location: form.itemLocation.value.trim(),
         deliveryOptions: getCheckedValues(form, "deliveryOptions").join(", ") || "Meet seller",
-        image: image,
+        image: image || (existingListing ? existingListing.image : ""),
         description: form.itemDescription.value.trim(),
+        sold: form.itemStatus ? form.itemStatus.value === "sold" : Boolean(existingListing && existingListing.sold),
         sellerEmail: getCurrentUserEmail(),
         sellerVerified: Boolean(currentUser && currentUser.verified)
     };
 
-    if (typeof apiRequest === "function") {
-        try {
-            const response = await apiRequest("listings", {
-                sellerId: currentUser ? currentUser.id : null,
-                name: listing.name,
-                price: listing.price,
-                category: listing.category,
-                condition: listing.condition,
-                location: listing.location,
-                deliveryOptions: listing.deliveryOptions,
-                image: listing.image,
-                description: listing.description
-            });
-
-            listing.id = response.id;
-        } catch (error) {
-            listing.id = Date.now();
-        }
-    }
-
-    listings.push(listing);
-    localStorage.setItem("hustleHubListings", JSON.stringify(listings));
-    notifyFollowersOfListing(listing);
-
-    if (form.dataset.editListingId) {
-        const editListingId = Number(form.dataset.editListingId);
-        const updatedListings = listings.map(function (listingItem) {
-            if (Number(listingItem.id) === editListingId) {
-                return {
-                    ...listingItem,
-                    ...listing,
-                    id: listingItem.id,
-                    sellerEmail: listingItem.sellerEmail,
-                    sellerVerified: listingItem.sellerVerified
-                };
+    if (existingListing) {
+        if (typeof apiRequest === "function") {
+            try {
+                await apiRequest("update-listing", {
+                    id: editListingId,
+                    name: listing.name,
+                    brand: listing.brand,
+                    price: listing.price,
+                    category: listing.category,
+                    condition: listing.condition,
+                    location: listing.location,
+                    deliveryOptions: listing.deliveryOptions,
+                    image: listing.image,
+                    description: listing.description
+                });
+            } catch (error) {
+                // Keep the local prototype usable when the API is unavailable.
             }
-            return listingItem;
-        });
-
-        localStorage.setItem("hustleHubListings", JSON.stringify(updatedListings));
-        showMessage("sellMessage", "Listing updated successfully.", "success");
-        return;
-    }
-
-    if (form.dataset.editListingId) {
-        const editListingId = Number(form.dataset.editListingId);
-        const existingListing = listings.find(function (listingItem) {
-            return Number(listingItem.id) === editListingId;
-        });
-
-        if (!existingListing) {
-            showMessage("sellMessage", "Unable to find the listing to update.", "danger");
-            return;
-        }
-
-        if (!isCurrentUserListingOwner(existingListing)) {
-            showMessage("sellMessage", "You are not allowed to edit this listing.", "danger");
-            return;
         }
 
         const updatedListings = listings.map(function (listingItem) {
@@ -506,6 +483,7 @@ async function handleSellListing(event) {
             const response = await apiRequest("listings", {
                 sellerId: currentUser ? currentUser.id : null,
                 name: listing.name,
+                brand: listing.brand,
                 price: listing.price,
                 category: listing.category,
                 condition: listing.condition,
@@ -733,10 +711,47 @@ function getStoredListings() {
     }
 
     try {
-        return JSON.parse(listings);
+        const parsedListings = JSON.parse(listings);
+        const uniqueListings = removeDuplicateListings(parsedListings);
+
+        if (uniqueListings.length !== parsedListings.length) {
+            localStorage.setItem("hustleHubListings", JSON.stringify(uniqueListings));
+        }
+
+        return uniqueListings;
     } catch (error) {
         return [];
     }
+}
+
+function removeDuplicateListings(listings) {
+    if (!Array.isArray(listings)) {
+        return [];
+    }
+
+    const seen = new Set();
+
+    return listings.filter(function (listing) {
+        const key = [
+            listing.sellerEmail || "",
+            listing.name || "",
+            listing.brand || "",
+            String(listing.price || ""),
+            listing.category || "",
+            listing.condition || "",
+            listing.location || "",
+            listing.deliveryOptions || "",
+            listing.image || "",
+            listing.description || ""
+        ].join("::");
+
+        if (seen.has(key)) {
+            return false;
+        }
+
+        seen.add(key);
+        return true;
+    });
 }
 
 async function loadSavedListings() {
@@ -751,7 +766,7 @@ async function loadSavedListings() {
     if (typeof apiRequest === "function") {
         try {
             const response = await apiRequest("listings");
-            listings = response.listings;
+            listings = removeDuplicateListings(response.listings);
             localStorage.setItem("hustleHubListings", JSON.stringify(listings));
         } catch (error) {
             listings = getStoredListings();
