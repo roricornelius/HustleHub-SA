@@ -57,9 +57,20 @@ footer.bg-dark{
     padding-right: 0.85rem !important;
 }
 
+.navbar .nav-button{
+    background: transparent;
+    border: 0;
+    color: rgba(255, 255, 255, 0.75);
+}
+
 .navbar .nav-link:hover,
 .navbar .nav-link.active{
     background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar .nav-button:hover,
+.navbar .nav-button:focus{
+    color: #ffffff;
 }
 
 .navbar-profile-shortcut{

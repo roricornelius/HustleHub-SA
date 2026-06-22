@@ -1169,7 +1169,7 @@ function updateNavbarForLoginState() {
     const currentUser = getCurrentUser();
     const linksToHide = currentUser
         ? '.navbar a[href="login.html"], .navbar a[href="register.html"]'
-        : '.navbar a[href="profile.html"]';
+        : '.navbar a[href="profile.html"], .navbar [data-user-logout]';
 
     document.querySelectorAll(linksToHide).forEach(function (link) {
         const navItem = link.closest(".nav-item");
@@ -1199,11 +1199,46 @@ function updateNavbarForLoginState() {
             decorateNavLink(navList, "notifications.html", {
                 badgeCount: getUnreadNotificationCount(currentUser.email)
             });
+            addNavButton(navList, "Logout", handleLogout, {
+                datasetName: "userLogout"
+            });
         }
 
         if (currentUser && currentUser.roleId === "admin" && !window.location.pathname.includes("/admin/")) {
             addNavLink(navList, "admin/dashboard.html", "Admin");
         }
+    });
+}
+
+function addNavButton(navList, label, clickHandler, options) {
+    const settings = options || {};
+    const selector = settings.datasetName ? "[data-" + camelToKebab(settings.datasetName) + "]" : "";
+    const exists = selector && navList.querySelector(selector);
+
+    if (exists) {
+        return;
+    }
+
+    const item = document.createElement("li");
+    const button = document.createElement("button");
+
+    item.className = "nav-item";
+    button.className = "nav-link nav-button";
+    button.type = "button";
+    button.textContent = label;
+
+    if (settings.datasetName) {
+        button.dataset[settings.datasetName] = "true";
+    }
+
+    button.addEventListener("click", clickHandler);
+    item.appendChild(button);
+    navList.appendChild(item);
+}
+
+function camelToKebab(value) {
+    return String(value).replace(/[A-Z]/g, function (letter) {
+        return "-" + letter.toLowerCase();
     });
 }
 
@@ -1719,6 +1754,7 @@ function setupProfileActions() {
     const editButton = document.getElementById("editProfileButton");
     const avatarButton = document.getElementById("profileAvatarButton");
     const cancelButton = document.getElementById("cancelEditProfileButton");
+    const logoutButton = document.getElementById("logoutButton");
     const deleteButton = document.getElementById("deleteAccountButton");
     const editSection = document.getElementById("editProfileSection");
 
@@ -1765,9 +1801,23 @@ function setupProfileActions() {
         setupProfilePhotoPositionControls(profileForm);
     }
 
+    if (logoutButton) {
+        logoutButton.addEventListener("click", handleLogout);
+    }
+
     if (deleteButton) {
         deleteButton.addEventListener("click", handleAccountDelete);
     }
+}
+
+function handleLogout() {
+    localStorage.removeItem("hustleHubCurrentUser");
+    localStorage.setItem("hustleHubAuthRedirect", "profile.html");
+    window.location.href = getLoginPagePath();
+}
+
+function getLoginPagePath() {
+    return window.location.pathname.includes("/admin/") ? "../login.html" : "login.html";
 }
 
 function populateProfileForm() {
