@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     renderRolesTable();
     renderUsersTable();
     renderAdminProducts();
+    renderOrdersTable();
     renderReportsTable();
 });
 
@@ -121,11 +122,13 @@ async function syncAdminDataFromApi() {
         const usersResponse = await adminApiRequest("users");
         const listingsResponse = await adminApiRequest("listings");
         const reportsResponse = await adminApiRequest("reports");
+        const ordersResponse = await adminApiRequest("orders");
 
         localStorage.setItem("hustleHubRoles", JSON.stringify(rolesResponse.roles));
         localStorage.setItem("hustleHubUsers", JSON.stringify(usersResponse.users));
         localStorage.setItem("hustleHubListings", JSON.stringify(listingsResponse.listings));
         localStorage.setItem("hustleHubReports", JSON.stringify(reportsResponse.reports));
+        localStorage.setItem("hustleHubOrders", JSON.stringify(ordersResponse.orders));
     } catch (error) {
         // Keep the localStorage prototype working when the database API is unavailable.
     }
@@ -496,6 +499,51 @@ function renderAdminProducts() {
     });
 }
 
+function renderOrdersTable() {
+    const tableBody = document.getElementById("ordersTableBody");
+
+    if (!tableBody) {
+        return;
+    }
+
+    const orders = getOrders();
+    tableBody.innerHTML = "";
+
+    if (orders.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No orders yet.</td></tr>';
+        return;
+    }
+
+    orders.forEach(function (order) {
+        const normalizedOrder = normalizeAdminOrder(order);
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                <strong>${escapeAdminHtml(normalizedOrder.orderNumber)}</strong><br>
+                <span class="small text-muted">${escapeAdminHtml(formatAdminDate(normalizedOrder.date))}</span>
+            </td>
+            <td>
+                ${escapeAdminHtml(normalizedOrder.customer.fullName)}<br>
+                <span class="small text-muted">${escapeAdminHtml(normalizedOrder.customer.email)}</span><br>
+                <span class="small text-muted">${escapeAdminHtml(normalizedOrder.customer.phone)}</span>
+            </td>
+            <td>${escapeAdminHtml(formatAdminOrderItems(normalizedOrder.items))}</td>
+            <td>
+                ${escapeAdminHtml(normalizedOrder.delivery)}<br>
+                <span class="small text-muted">${escapeAdminHtml(normalizedOrder.address)}</span>
+            </td>
+            <td>${escapeAdminHtml(normalizedOrder.payment)}</td>
+            <td>
+                <span class="badge text-bg-light text-dark">${escapeAdminHtml(normalizedOrder.paymentStatus)}</span><br>
+                <span class="small text-muted">Dispute: ${escapeAdminHtml(normalizedOrder.disputeStatus)}</span>
+            </td>
+            <td class="text-end">R${Number(normalizedOrder.total || 0).toFixed(2)}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
 async function removeReportedProduct(reportId) {
     const report = getReportById(reportId);
 
@@ -849,6 +897,40 @@ function getBuiltInProducts() {
         { id: "product7", name: "PS5 Game Console", price: 12000, category: "Tech" },
         { id: "product8", name: "Corduroy Pants", price: 400, category: "Fashion" }
     ];
+}
+
+function normalizeAdminOrder(order) {
+    const customer = order.customer || {};
+
+    return {
+        orderNumber: order.orderNumber || order.id || "Unknown",
+        customer: {
+            fullName: customer.fullName || order.customerName || "Unknown customer",
+            email: customer.email || order.customerEmail || "No email",
+            phone: customer.phone || order.customerPhone || "No phone"
+        },
+        delivery: order.delivery || order.deliveryOption || "Not set",
+        address: order.address || "No address",
+        payment: order.payment || order.paymentMethod || "Not set",
+        paymentStatus: order.paymentStatus || "Pending",
+        disputeStatus: order.disputeStatus || "None",
+        items: Array.isArray(order.items) ? order.items : [],
+        total: Number(order.total) || 0,
+        date: order.date || order.createdAt || order.created_at || ""
+    };
+}
+
+function formatAdminOrderItems(items) {
+    if (!items || items.length === 0) {
+        return "No items";
+    }
+
+    return items.map(function (item) {
+        const quantity = Number(item.quantity) || 1;
+        const price = Number(item.price || item.productPrice || 0);
+
+        return quantity + " x " + (item.name || item.productName || "Item") + " (R" + price.toFixed(2) + ")";
+    }).join(", ");
 }
 
 function getSoldProductIds() {

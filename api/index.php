@@ -24,6 +24,7 @@ try {
         'update-listing' => update_listing(),
         'delete-listing' => delete_listing(),
         'checkout' => checkout(),
+        'orders' => get_orders(),
         'roles' => get_roles(),
         'users' => get_users(),
         'reports' => $method === 'GET' ? get_reports() : save_report(),
@@ -251,6 +252,42 @@ function checkout(): void
     }
 
     json_response(['success' => true, 'orderNumber' => $orderNumber]);
+}
+
+function get_orders(): void
+{
+    $rows = db()->query('SELECT * FROM orders ORDER BY created_at DESC')->fetchAll();
+    $itemStmt = db()->prepare('SELECT product_name, product_price, quantity FROM order_items WHERE order_id = ? ORDER BY id');
+
+    $orders = array_map(function ($row) use ($itemStmt) {
+        $itemStmt->execute([(int) $row['id']]);
+        $items = array_map(fn ($item) => [
+            'name' => $item['product_name'],
+            'price' => (float) $item['product_price'],
+            'quantity' => (int) $item['quantity'],
+        ], $itemStmt->fetchAll());
+
+        return [
+            'id' => (int) $row['id'],
+            'orderNumber' => $row['order_number'],
+            'customerId' => $row['customer_id'] ? (int) $row['customer_id'] : null,
+            'customer' => [
+                'fullName' => $row['customer_name'],
+                'email' => $row['customer_email'],
+                'phone' => $row['customer_phone'],
+            ],
+            'delivery' => $row['delivery_option'],
+            'address' => $row['address'],
+            'payment' => $row['payment_method'],
+            'paymentStatus' => $row['payment_status'],
+            'disputeStatus' => $row['dispute_status'],
+            'items' => $items,
+            'total' => (float) $row['total'],
+            'date' => $row['created_at'],
+        ];
+    }, $rows);
+
+    json_response(['success' => true, 'orders' => $orders]);
 }
 
 function get_roles(): void
