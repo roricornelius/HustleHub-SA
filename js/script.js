@@ -392,11 +392,17 @@ async function handleSellListing(event) {
     const form = event.currentTarget;
     const editListingId = form.dataset.editListingId ? Number(form.dataset.editListingId) : null;
 
+    if (form.dataset.isSaving === "true") {
+        return;
+    }
+
     if (!form.checkValidity()) {
         form.classList.add("was-validated");
         showMessage("sellMessage", "Please complete the required listing details.", "danger");
         return;
     }
+
+    setSellFormSaving(form, true);
 
     let image = "";
 
@@ -404,6 +410,7 @@ async function handleSellListing(event) {
         image = await getSelectedListingImage(form);
     } catch (error) {
         showMessage("sellMessage", "Please upload a valid image file.", "danger");
+        setSellFormSaving(form, false);
         return;
     }
 
@@ -415,11 +422,13 @@ async function handleSellListing(event) {
 
     if (editListingId && !existingListing) {
         showMessage("sellMessage", "Unable to find the listing to update.", "danger");
+        setSellFormSaving(form, false);
         return;
     }
 
     if (existingListing && !isCurrentUserListingOwner(existingListing)) {
         showMessage("sellMessage", "You are not allowed to edit this listing.", "danger");
+        setSellFormSaving(form, false);
         return;
     }
 
@@ -473,6 +482,7 @@ async function handleSellListing(event) {
 
         localStorage.setItem("hustleHubListings", JSON.stringify(updatedListings));
         showMessage("sellMessage", "Listing updated successfully.", "success");
+        setSellFormSaving(form, false);
         return;
     }
 
@@ -506,6 +516,18 @@ async function handleSellListing(event) {
     form.reset();
     form.classList.remove("was-validated");
     showMessage("sellMessage", "Listing saved successfully.", "success");
+    setSellFormSaving(form, false);
+}
+
+function setSellFormSaving(form, isSaving) {
+    const submitButton = document.getElementById("sellSubmitButton");
+
+    form.dataset.isSaving = isSaving ? "true" : "false";
+
+    if (submitButton) {
+        submitButton.disabled = isSaving;
+        submitButton.textContent = isSaving ? "Saving..." : (form.dataset.editListingId ? "Update Listing" : "Save Listing");
+    }
 }
 
 function getCheckedValues(form, name) {
@@ -573,7 +595,7 @@ function setupPhotoSourceToggle(form) {
     });
 }
 
-function setupSellFormEdit(form) {
+async function setupSellFormEdit(form) {
     const params = new URLSearchParams(window.location.search);
     const editId = params.get("edit");
 
@@ -581,18 +603,34 @@ function setupSellFormEdit(form) {
         return;
     }
 
-    const listings = getStoredListings();
+    form.dataset.editListingId = String(editId);
+    setSellFormLoading(form, true);
+
+    let listings = getStoredListings();
+
+    if (typeof apiRequest === "function") {
+        try {
+            const response = await apiRequest("listings");
+            listings = removeDuplicateListings(response.listings);
+            localStorage.setItem("hustleHubListings", JSON.stringify(listings));
+        } catch (error) {
+            listings = getStoredListings();
+        }
+    }
+
     const listing = listings.find(function (listingItem) {
         return String(listingItem.id) === String(editId);
     });
 
     if (!listing) {
         showMessage("sellMessage", "Listing not found.", "danger");
+        setSellFormUnavailable(form);
         return;
     }
 
     if (!isCurrentUserListingOwner(listing)) {
         showMessage("sellMessage", "You are not allowed to edit this listing.", "danger");
+        setSellFormUnavailable(form);
         return;
     }
 
@@ -625,6 +663,29 @@ function setupSellFormEdit(form) {
     Array.from(form.querySelectorAll("input[name='deliveryOptions']")).forEach(function (input) {
         input.checked = listing.deliveryOptions ? listing.deliveryOptions.split(", ").includes(input.value) : false;
     });
+
+    setSellFormLoading(form, false);
+}
+
+function setSellFormLoading(form, isLoading) {
+    const submitButton = document.getElementById("sellSubmitButton");
+
+    if (submitButton) {
+        submitButton.disabled = isLoading;
+        submitButton.textContent = isLoading ? "Loading..." : (form.dataset.editListingId ? "Update Listing" : "Save Listing");
+    }
+}
+
+function setSellFormUnavailable(form) {
+    const submitButton = document.getElementById("sellSubmitButton");
+
+    Array.from(form.elements).forEach(function (element) {
+        element.disabled = true;
+    });
+
+    if (submitButton) {
+        submitButton.textContent = "Unavailable";
+    }
 }
 
 function setupProfilePhotoSourceToggle(form) {
